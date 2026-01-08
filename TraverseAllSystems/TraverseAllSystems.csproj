@@ -1,83 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-      None
-    </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7BEA4DEA-49A7-48FD-B2F4-9A955EAE48D6}</ProjectGuid>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TraverseAllSystems</RootNamespace>
     <AssemblyName>TraverseAllSystems</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWindowsForms>false</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(ProgramW6432)\Autodesk\Revit 2017\Revit.exe</StartProgram>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(ProgramW6432)\Autodesk\Revit 2017\Revit.exe</StartProgram>
-  </PropertyGroup>
+
+  <!-- Revit 2025 References -->
   <ItemGroup>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPIUI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.XML" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CmdCreateSharedParameter.cs" />
-    <Compile Include="Command.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="SharedParameterMgr.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TraversalTree.cs" />
-    <Compile Include="Util.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="TraverseAllSystems.addin" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2017"
-copy "$(ProjectDir)bin\debug\*.dll" "$(AppData)\Autodesk\REVIT\Addins\2017"</PostBuildEvent>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="AfterClean">
-    <Delete Files="$(AppData)\Autodesk\REVIT\Addins\2017\TraverseAllSystems.addin" />
-    <Delete Files="$(AppData)\Autodesk\REVIT\Addins\2017\TraverseAllSystems.dll" />
+
+  <!-- Post-build: Deploy to Revit Addins folder -->
+  <Target Name="DeployToRevit" AfterTargets="Build">
+    <PropertyGroup>
+      <RevitVersion>2025</RevitVersion>
+      <AddinsFolder>$(APPDATA)\Autodesk\REVIT\Addins\$(RevitVersion)</AddinsFolder>
+    </PropertyGroup>
+    <MakeDir Directories="$(AddinsFolder)" Condition="!Exists('$(AddinsFolder)')" />
+    <Copy SourceFiles="$(ProjectDir)TraverseAllSystems_$(RevitVersion).addin"
+          DestinationFiles="$(AddinsFolder)\TraverseAllSystems.addin"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetPath)"
+          DestinationFolder="$(AddinsFolder)"
+          SkipUnchangedFiles="true" />
+    <Message Text="Deployed to $(AddinsFolder)" Importance="high" />
   </Target>
 </Project>

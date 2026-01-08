@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>Traverse MEP Systems</Text>
+    <Description>Export graph structure of all MEP systems to JSON - AquaBrain Edition</Description>
+    <Assembly>TraverseAllSystems.dll</Assembly>
+    <FullClassName>TraverseAllSystems.Command</FullClassName>
+    <ClientId>8354d365-d2c8-40c1-96cd-531dfdca19b1</ClientId>
+    <VendorId>com.aquabrain</VendorId>
+    <VendorDescription>AquaBrain MEP Engineering, https://aquabrain.io</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>Analyze Sprinkler Systems</Text>
+    <Description>Analyze fire sprinkler system graphs with NFPA 13 compliance checks</Description>
+    <Assembly>TraverseAllSystems.dll</Assembly>
+    <FullClassName>TraverseAllSystems.SprinklerSystemAnalyzer</FullClassName>
+    <ClientId>f7e2a1b3-4c5d-6e7f-8a9b-0c1d2e3f4a5b</ClientId>
+    <VendorId>com.aquabrain</VendorId>
+    <VendorDescription>AquaBrain MEP Engineering, https://aquabrain.io</VendorDescription>
+  </AddIn>
+</RevitAddIns>

@@ -152,8 +152,9 @@ namespace TraverseAllSystems
             ?? CreateNewDefinition(group,
               _shared_param_name, SpecTypeId.String.Text); // ParameterType.Text
 
+        // Revit 2024+: Use GroupTypeId instead of BuiltInParameterGroup
         doc.ParameterBindings.Insert( definition, binding,
-          BuiltInParameterGroup.PG_GENERAL );
+          GroupTypeId.General );
 
         t.Commit();
       }
